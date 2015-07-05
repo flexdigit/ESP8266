@@ -5,8 +5,7 @@ Server einrichtgen
 ******************
 --------------------------------------------------------------------------
 WLAN-Connect
-1.)    AT+CWMODE=1             Station mode, 2 - AP-Mode, 3 - beides
-1.1)   AT+CWJAP="SSID-Hamster","PASSWORT"
+1.)    AT+CWMODE=2             1 - Station mode, 2 - AP-Mode, 3 - beides
 
 Server-Start
 2.) AT+CIPMUX=1             Enable Multiple connections
@@ -16,30 +15,21 @@ Server-Start
 
 4.) AT+CIFSR                Check module IP address
 5.) AT+CIPSTATUS            Get connection status
-
-
 6.) AT+CWSAP="ESP4711","12345678",7,3
                             ESP als Access Point mit SSID "ESP4711" und dem
                             Passwort "12345678". Das Passwort muss eine
                             Mindestlänge von 8 Zeichen haben.
                             Under AP mode!!!
+                            7: Channel
+                            3: WPA2_PSK
 
-7.) AT+CWSAP?               Abfrage der Einstgellungen
-
-AT+CIPMUX=1     Um mehrere Verbindungen gleichzietig zu ermöglichen.
-                Dies wird nicht gespeichert nach Neustart/Reset!
+7.) AT+CWSAP?               Abfrage der Einstellungen
 
 *********************************************************************
-Nach AT+RST muss ich 1.) bis 3.) absetzen, dass ich mich 
+Nach AT+RST muss ich 2.) bis 3.) absetzen, dass ich mich 
 wieder mit dem Smartphone verbinden kann.
 *********************************************************************
 
-
-AT+CIFSR    IP herausfinden
-
-Antwort: 2 IP-Adressen
-Die erste auswählen, wenn eine direkte Verbindung über den AP benutzt wird.
-Die zweite auswählen, wenn über den Router das Modul erreicht werden soll.
 
 Allgemein werdenempfangene Daten durch +IPD gekennzeichnet. Danach folgen zwei Zahlen.
 Die erste Zahl zeigt, welche der bestehenden Verbindungen die Daten geschickt hat. Da
