@@ -1,4 +1,3 @@
-(aus http://fkainka.de/wlan-modul-server-einrichten/)
 
 ******************
 Server einrichtgen
@@ -10,8 +9,6 @@ WLAN-Connect
 Server-Start
 2.) AT+CIPMUX=1             Enable Multiple connections
 3.) AT+CIPSERVER=1,9768     Server auf Port 9768, default IP: 192.168.4.1
---------------------------------------------------------------------------
-
 
 4.) AT+CIFSR                Check module IP address
 5.) AT+CIPSTATUS            Get connection status
