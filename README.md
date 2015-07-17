@@ -3,6 +3,7 @@
 Server einrichtgen
 --------------------------------------------------------------------------
 WLAN-Connect
+
 1.) AT+CWMODE=2             1 - Station mode, 2 - AP-Mode, 3 - beides
 
 Server-Start
