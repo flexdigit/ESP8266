@@ -1,21 +1,17 @@
 //--------------------------------------------------------------------------
-// Wifi Modul ESP8266 Parameter als Accrsspoint setzen
+// Wifi Modul ESP8266 Parameter als Accesspoint setzen
 //--------------------------------------------------------------------------
 // Basis war das Beispiel von Ray Wang  http://rayshobby.net/?p=9734
 //--------------------------------------------------------------------------
 
-#define WIFI_DEBUG
-
-#define WIFI_Serial Serial
-#define Debug_Serial mySerial
+#define Debug_Serial Serial     // For debugging purpose on the serial monitor
+//#define EspSerial mySerial      // For command purpose for the ESP8266
 
 
-#ifdef WIFI_DEBUG
 #include <SoftwareSerial.h>
-SoftwareSerial mySerial(10,11); // RX, TX
-#endif
+SoftwareSerial EspSerial(10,11); // RX, TX
 
-#define SSID  "myESP01"     // WiFi SSID
+#define SSID  "astral"     // WiFi SSID
 #define PASS  "12345678"  // WiFi Passwort
 #define WIFI_CANNEL 8
 #define WIFI_SECURE 3
@@ -25,15 +21,13 @@ SoftwareSerial mySerial(10,11); // RX, TX
 // 3 = WPA2_PSK
 // 4 = WPA_WPA2_PSK
 
-
-
 #define WIFI_ERROR_NONE 0
 #define WIFI_ERROR 1
 
 //---------------------------------------------------------------------------
-// WIFILEDPIN
 int WIFI_Setup_Error = 0;
-
+#define BUFFER_SIZE 128
+char buffer[BUFFER_SIZE];
 //---------------------------------------------------------------------------
 // LED Handling
 #define LEDMODE_AUS 0
@@ -46,7 +40,7 @@ unsigned long led_nextpuls=0;
 int led_pulsdauer = 500;
 
 //-----------------------------------------------------------------------
-// Routinen deklarieren
+// prototypes
 
 int WIFI_Setup();
 void Led_Handling();
@@ -56,29 +50,27 @@ void Set_Led(int p);
 void setup() {
   pinMode(LEDPIN,OUTPUT);
 
-  WIFI_Serial.begin(115200);
-  WIFI_Serial.setTimeout(5000);
-
-#ifdef WIFI_DEBUG
-  //Debug_Serial.begin(9600);
   Debug_Serial.begin(115200);
-#endif
+  Debug_Serial.setTimeout(5000);        // What for????
+
+  //EspSerial.begin(9600);
+  EspSerial.begin(115200);
   //----------------------------------
-  // 3 sec warten
-  delay (3000);
+  // 1 sec warten
+  delay (1000);
 
   Set_Led(HIGH);
 
   WIFI_Setup_Error = WIFI_Setup();
 
-#ifdef WIFI_DEBUG
   if (WIFI_Setup_Error) {
-    Debug_Serial.println("Error");
+    Debug_Serial.print("WIFI_Setup_Error: ");
+    Debug_Serial.println(WIFI_Setup_Error);
+    Debug_Serial.println("Error in WIFI_Setup()...");
   }
-#endif
 
   if (WIFI_Setup_Error) led_mode=LEDMODE_BLINK;
-  else Set_Led(LOW);
+  else                  Set_Led(LOW);
 
 }
 //--------------------------------------------------------------------------
@@ -93,76 +85,107 @@ int WIFI_Setup() {
   //---------------------------------------------------------------------------
   // WiFi Modus setzen
 
-#ifdef WIFI_DEBUG
+  EspSerial.println("AT+CWMODE=2");
   Debug_Serial.println("AT+CWMODE=2");
-#endif
-
-  WIFI_Serial.println("AT+CWMODE=2");
   delay(1000);
   // Normale Antwort AT+CWMODE=1 0x0D 0x0D 0x0A OK <crlf> 
 
-  if(WIFI_Serial.find("Error")){
-    return WIFI_ERROR;
-  }
+  //if(EspSerial.find("Error")){
+  //  Debug_Serial.println(WIFI_ERROR);
+  //  return WIFI_ERROR;
+  //}
 
-#ifdef WIFI_DEBUG
-  Debug_Serial.println("AT+CIPMUX=1");
-#endif
-
-  WIFI_Serial.println("AT+CIPMUX=1");
-  delay(1000);
+  //EspSerial.println("AT+CIPMUX=1");
+  //Debug_Serial.println("AT+CIPMUX=1");
+  //delay(1000);
   
-#ifdef WIFI_DEBUG
-  Debug_Serial.println("AT+CIPSERVER=1,9768");
-#endif
-
-  WIFI_Serial.println("AT+CIPSERVER=1,9768");
-  delay(1000);
-
+  //EspSerial.println("AT+CIPSERVER=1,9768");
+  //Debug_Serial.println("AT+CIPSERVER=1,9768");
+  //delay(1000);
   
 //-------------------------------------------------------------------
 // Modul resetten
-#ifdef WIFI_DEBUG
+  EspSerial.println("AT+RST");
   Debug_Serial.println("AT+RST");
-#endif
+  delay(3000);
 
-  WIFI_Serial.println("AT+RST");
-  delay(5000);
-
+  // tut nicht
+  //EspSerial.readBytesUntil('\n', buffer, BUFFER_SIZE);
+  //delay(3000);
+  //Debug_Serial.println(buffer);
+  
   // "Normale Antwort AT+RST 0xD 0xD 0xA 0xD 0xA OK 0xD 0xA 0xD 0xA ets Jan  ... ready 0xD 0xA
-
-  if(!WIFI_Serial.find("ready")) {
+  if(!EspSerial.find("ready")) {
     return WIFI_ERROR;
   }
-  WIFI_Serial.println("UNd nuuu?");
+  Debug_Serial.println("So!");
+  
+  // Generiert nur Zahlen.....
+  //int value = 0;
+  //while ((value = EspSerial.read()) != -1)
+  //{
+  //    Debug_Serial.println(value);
+  //    value = 0;
+  //}
+  
+  //Debug_Serial.println("Und nuuu?");
   // ---------------------------------------------------------------
   // Netzwerk Parameter setzen
-
-#ifdef WIFI_DEBUG
-  Debug_Serial.println("AT+CWSAP");
-#endif
-
-  WIFI_Serial.print("AT+CWSAP=\"");
-  WIFI_Serial.print(SSID);
-  WIFI_Serial.print("\",\"");
-  WIFI_Serial.print(PASS);
-  WIFI_Serial.print("\",");
-  WIFI_Serial.print(WIFI_CANNEL);
-  WIFI_Serial.print(",");
-  WIFI_Serial.println(WIFI_SECURE);
+  EspSerial.print("AT+CWSAP=\"");
+  EspSerial.print(SSID);
+  EspSerial.print("\",\"");
+  EspSerial.print(PASS);
+  EspSerial.print("\",");
+  EspSerial.print(WIFI_CANNEL);
+  EspSerial.print(",");
+  EspSerial.println(WIFI_SECURE);
   delay(1000);
 
-  // Normale Antwort AT+CWJAP="<SSID>”,"<Passwort>" 0x0D 0x0D 0x0A 0x0D 0x0A OK 0x0D 0x0A 
-
-  if(!WIFI_Serial.find("OK")){
+  //Debug_Serial.println(EspSerial.read());
+  if(!EspSerial.find("OK")){
+    Debug_Serial.println("Bin hier!!!");
     return WIFI_ERROR;
   }
+  else Debug_Serial.println("Kein Fehler");
+  
+  Debug_Serial.print("AT+CWSAP=\"");
+  Debug_Serial.print(SSID);
+  Debug_Serial.print("\",\"");
+  Debug_Serial.print(PASS);
+  Debug_Serial.print("\",");
+  Debug_Serial.print(WIFI_CANNEL);
+  Debug_Serial.print(",");
+  Debug_Serial.println(WIFI_SECURE);
+  delay(1000);
 
-#ifdef WIFI_DEBUG
+  // get IP
+  //Debug_Serial.print(F("ip address : "));
+  //Debug_Serial.print("ip address : ");
+  //Debug_Serial.println( GetResponse("AT+CIFSR", 10) );
+  //delay(1000);
+
   Debug_Serial.println("Setup okay");
-#endif
 
   return WIFI_ERROR_NONE;
+}
+
+//--------------------------------------------------------------------
+// Get the data from the WiFi module and send it to the debug serial port
+String GetResponse(String AT_Command, int wait){
+  String tmpData;
+  
+  EspSerial.println(AT_Command);
+  delay(1000);
+  while (EspSerial.available() >0 )  {
+    char c = EspSerial.read();
+    tmpData += c;
+    
+    if ( tmpData.indexOf(AT_Command) > -1 )         
+      tmpData = "";
+    else
+      tmpData.trim();       
+  }
+  return tmpData;
 }
 
 //--------------------------------------------------------------------
