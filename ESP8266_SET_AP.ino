@@ -84,16 +84,15 @@ int WIFI_Setup() {
 
   //---------------------------------------------------------------------------
   // WiFi Modus setzen
-
   EspSerial.println("AT+CWMODE=2");
   Debug_Serial.println("AT+CWMODE=2");
   delay(1000);
+  
   // Normale Antwort AT+CWMODE=1 0x0D 0x0D 0x0A OK <crlf> 
-
-  //if(EspSerial.find("Error")){
-  //  Debug_Serial.println(WIFI_ERROR);
-  //  return WIFI_ERROR;
-  //}
+  if(EspSerial.find("Error")){
+    Debug_Serial.println("Error after AT+CWMODE=2.");
+    return WIFI_ERROR;
+  }
 
   //EspSerial.println("AT+CIPMUX=1");
   //Debug_Serial.println("AT+CIPMUX=1");
@@ -107,19 +106,20 @@ int WIFI_Setup() {
 // Modul resetten
   EspSerial.println("AT+RST");
   Debug_Serial.println("AT+RST");
-  delay(3000);
+  delay(5000);
+
+  // "Normale Antwort AT+RST 0xD 0xD 0xA 0xD 0xA OK 0xD 0xA 0xD 0xA ets Jan  ... ready 0xD 0xA
+  if(!EspSerial.find("ready")) {
+    Debug_Serial.println("Error after AT+RST.");
+    return WIFI_ERROR;
+  }
+  Debug_Serial.println("So!");
 
   // tut nicht
   //EspSerial.readBytesUntil('\n', buffer, BUFFER_SIZE);
   //delay(3000);
   //Debug_Serial.println(buffer);
-  
-  // "Normale Antwort AT+RST 0xD 0xD 0xA 0xD 0xA OK 0xD 0xA 0xD 0xA ets Jan  ... ready 0xD 0xA
-  if(!EspSerial.find("ready")) {
-    return WIFI_ERROR;
-  }
-  Debug_Serial.println("So!");
-  
+    
   // Generiert nur Zahlen.....
   //int value = 0;
   //while ((value = EspSerial.read()) != -1)
@@ -139,7 +139,7 @@ int WIFI_Setup() {
   EspSerial.print(WIFI_CANNEL);
   EspSerial.print(",");
   EspSerial.println(WIFI_SECURE);
-  delay(1000);
+  delay(3000);
 
   //Debug_Serial.println(EspSerial.read());
   if(!EspSerial.find("OK")){
