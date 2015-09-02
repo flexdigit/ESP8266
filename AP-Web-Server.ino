@@ -1,4 +1,8 @@
 /*
+ * From
+ * https://learn.sparkfun.com/tutorials/esp8266-thing-hookup-guide/all#example-sketch-ap-web-server
+ */
+/*
  * Source was
  * https://learn.sparkfun.com/tutorials/esp8266-thing-hookup-guide/example-sketch-ap-web-server
  * and I put some bits from
@@ -13,6 +17,10 @@
 const char WiFiAPPSK[] = "sparkfun";
 const char AP_NameChar[] = "astral";
 
+// Oder so:
+//const char* ssid = "your-ssid";
+//const char* password = "your-password";
+
 /////////////////////
 // Pin Definitions //
 /////////////////////
@@ -24,9 +32,19 @@ WiFiServer server(80);
 
 void setup() 
 {
-  initHardware();
-  setupWiFi();
-  server.begin();
+    Serial.begin(115200);
+    delay (1);
+    
+    pinMode(DIGITAL_PIN, INPUT_PULLUP);
+    pinMode(LED_PIN, OUTPUT);
+    digitalWrite(LED_PIN, LOW);
+    // Don't need to set ANALOG_PIN as input, 
+    // that's all it can be.
+    
+    // set to AP mode
+    WiFi.mode(WIFI_AP);
+    WiFi.softAP(AP_NameChar, WiFiAPPSK);
+    server.begin();
 }
 
 void loop() 
@@ -57,7 +75,7 @@ void loop()
   if (val >= 0)
     digitalWrite(LED_PIN, val);
 
-  client.flush();
+  //client.flush();
 
   // Prepare the response. Start with the common header:
   String s = "HTTP/1.1 200 OK\r\n";
@@ -92,18 +110,3 @@ void loop()
   // when the function returns and 'client' object is detroyed
 }
 
-void setupWiFi()
-{
-    WiFi.mode(WIFI_AP);
-    WiFi.softAP(AP_NameChar, WiFiAPPSK);
-}
-
-void initHardware()
-{
-  Serial.begin(115200);
-  pinMode(DIGITAL_PIN, INPUT_PULLUP);
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);
-  // Don't need to set ANALOG_PIN as input, 
-  // that's all it can be.
-}
