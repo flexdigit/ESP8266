@@ -1,8 +1,4 @@
 /*
- * From
- * https://learn.sparkfun.com/tutorials/esp8266-thing-hookup-guide/all#example-sketch-ap-web-server
- */
-/*
  * Source was
  * https://learn.sparkfun.com/tutorials/esp8266-thing-hookup-guide/example-sketch-ap-web-server
  * and I put some bits from
