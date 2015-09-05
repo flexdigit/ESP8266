@@ -12,13 +12,12 @@
 #include <ESP8266WebServer.h>
  
 String html1 = "<!DOCTYPE html>\r\n<html>\r\n\
-<head>\r\n<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"content-type\">\r\n\
-<title>Garage control</title>\r\n\
-<form action=\"";
-// String((val)?"/1.html":"/0.html")
+                <head>\r\n<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"content-type\">\r\n\
+                <title>Garage control</title>\r\n\
+                <form action=\"";
 String html2 = "\">\r\n<input value=\"Open/Close\" style=\"";
 String html3 = " width:15em;height:13em; font-size: 24px;\" type=\"submit\">\
-</form>\r\n</head>\r\n<body>\r\n</body>\r\n</html>";
+                </form>\r\n</head>\r\n<body>\r\n</body>\r\n</html>";
  
 ESP8266WebServer server(80);        // Setup server port
 int val = 1;                        // switched off on setup
@@ -44,7 +43,12 @@ void Ereignis_SchalteOFF()          // Executed if "http://<ip address>//0.html"
  
 void Ereignis_Index()               // Executed if "http://<ip address>/" is called
 {
-    Temp = html1 + String((val) ? "/1.html" : "/0.html");
+    val = !val;                     // doggle relay
+    digitalWrite(0, val);           // GPIO0
+    Serial.print("LED is ");
+    Serial.println(val);
+    //Temp = html1 + String((val) ? "/1.html" : "/0.html");
+    Temp = html1;
     Temp += html2 + String((val) ? "BACKGROUND-COLOR: DarkGray;" : "BACKGROUND-COLOR: Chartreuse;") + html3;
     server.send(200, "text/html", Temp);
 }
@@ -67,8 +71,8 @@ void setup()
     
     // treatment of the different events - before server.begin()!!!
     server.on("/",       Ereignis_Index);
-    server.on("/1.html", Ereignis_SchalteON);
-    server.on("/0.html", Ereignis_SchalteOFF);
+    //server.on("/1.html", Ereignis_SchalteON);
+    //server.on("/0.html", Ereignis_SchalteOFF);
     
     server.begin();                       // start the server
     Serial.println("HTTP Server gestartet");
@@ -86,4 +90,5 @@ void loop()
 //    while (!digitalRead(2))server.handleClient(); // Warten bis der Taster losgelassen wird.
 //  }
 }
+
 
