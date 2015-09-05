@@ -16,33 +16,33 @@ String html1 = "<!DOCTYPE html>\r\n<html>\r\n\
 <title>Garage control</title>\r\n\
 <form action=\"";
 // String((val)?"/1.html":"/0.html")
-String html2 = "\">\r\n<input value=\"ON/OFF\" style=\"";
+String html2 = "\">\r\n<input value=\"Open/Close\" style=\"";
 String html3 = " width:15em;height:13em; font-size: 24px;\" type=\"submit\">\
 </form>\r\n</head>\r\n<body>\r\n</body>\r\n</html>";
  
-ESP8266WebServer server(80);    // Setup server port
-int val = 1;                    // switched off during init
+ESP8266WebServer server(80);        // Setup server port
+int val = 1;                        // switched off on setup
 String Temp = "";
  
-void Ereignis_SchalteON()       // Executed if "http://<ip address>/1.html" is called
+void Ereignis_SchalteON()           // Executed if "http://<ip address>/1.html" is called
 {
-    val = 0;                      // Relay off
-    digitalWrite(0, val);         // GPIO0
+    val = 0;                        // Relay off
+    digitalWrite(0, val);           // GPIO0
     Temp = html1 + String((val) ? "/1.html" : "/0.html");
     Temp += html2 + String((val) ? "BACKGROUND-COLOR: DarkGray;" : "BACKGROUND-COLOR: Chartreuse;") + html3;
     server.send(200, "text/html", Temp);
 }
  
-void Ereignis_SchalteOFF()      // Executed if "http://<ip address>//0.html" is called
+void Ereignis_SchalteOFF()          // Executed if "http://<ip address>//0.html" is called
 {
-    val = 1;                      // Relay on
-    digitalWrite(0, val);         // GPIO0
+    val = 1;                        // Relay on
+    digitalWrite(0, val);           // GPIO0
     Temp = html1 + String((val) ? "/1.html" : "/0.html");
     Temp += html2 + String((val) ? "BACKGROUND-COLOR: DarkGray;" : "BACKGROUND-COLOR: Chartreuse;") + html3;
     server.send(200, "text/html", Temp);
 }
  
-void Ereignis_Index()           // Executed if "http://<ip address>/" is called
+void Ereignis_Index()               // Executed if "http://<ip address>/" is called
 {
     Temp = html1 + String((val) ? "/1.html" : "/0.html");
     Temp += html2 + String((val) ? "BACKGROUND-COLOR: DarkGray;" : "BACKGROUND-COLOR: Chartreuse;") + html3;
