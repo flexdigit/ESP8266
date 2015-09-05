@@ -20,63 +20,65 @@ String html2 = "\">\r\n<input value=\"ON/OFF\" style=\"";
 String html3 = " width:15em;height:13em; font-size: 24px;\" type=\"submit\">\
 </form>\r\n</head>\r\n<body>\r\n</body>\r\n</html>";
  
-ESP8266WebServer server(80);    // Server Port  hier einstellen
-int val = 1;                    //Startzustand ausgeschaltet
+ESP8266WebServer server(80);    // Setup server port
+int val = 1;                    // switched off during init
 String Temp = "";
  
-void Ereignis_SchalteON()       // Wird ausgefuehrt wenn "http://<ip address>/1.html" aufgerufen wurde
+void Ereignis_SchalteON()       // Executed if "http://<ip address>/1.html" is called
 {
-  val = 0;                      // Relais Aus
-  digitalWrite(0, val);         // GPIO0
-  Temp = html1 + String((val) ? "/1.html" : "/0.html");
-  Temp += html2 + String((val) ? "BACKGROUND-COLOR: DarkGray;" : "BACKGROUND-COLOR: Chartreuse;") + html3;
-  server.send(200, "text/html", Temp);
+    val = 0;                      // Relay off
+    digitalWrite(0, val);         // GPIO0
+    Temp = html1 + String((val) ? "/1.html" : "/0.html");
+    Temp += html2 + String((val) ? "BACKGROUND-COLOR: DarkGray;" : "BACKGROUND-COLOR: Chartreuse;") + html3;
+    server.send(200, "text/html", Temp);
 }
  
-void Ereignis_SchalteOFF()  // Wird ausgefuehrt wenn "http://<ip address>//0.html" aufgerufen wurde
+void Ereignis_SchalteOFF()      // Executed if "http://<ip address>//0.html" is called
 {
-  val = 1;                      // Relais Ein
-  digitalWrite(0, val);         // GPIO0
-  Temp = html1 + String((val) ? "/1.html" : "/0.html");
-  Temp += html2 + String((val) ? "BACKGROUND-COLOR: DarkGray;" : "BACKGROUND-COLOR: Chartreuse;") + html3;
-  server.send(200, "text/html", Temp);
+    val = 1;                      // Relay on
+    digitalWrite(0, val);         // GPIO0
+    Temp = html1 + String((val) ? "/1.html" : "/0.html");
+    Temp += html2 + String((val) ? "BACKGROUND-COLOR: DarkGray;" : "BACKGROUND-COLOR: Chartreuse;") + html3;
+    server.send(200, "text/html", Temp);
 }
  
-void Ereignis_Index()           // Wird ausgeuehrt wenn "http://<ip address>/" aufgerufen wurde
+void Ereignis_Index()           // Executed if "http://<ip address>/" is called
 {
-  Temp = html1 + String((val) ? "/1.html" : "/0.html");
-  Temp += html2 + String((val) ? "BACKGROUND-COLOR: DarkGray;" : "BACKGROUND-COLOR: Chartreuse;") + html3;
-  server.send(200, "text/html", Temp);
+    Temp = html1 + String((val) ? "/1.html" : "/0.html");
+    Temp += html2 + String((val) ? "BACKGROUND-COLOR: DarkGray;" : "BACKGROUND-COLOR: Chartreuse;") + html3;
+    server.send(200, "text/html", Temp);
 }
  
 void setup()
 {
-  digitalWrite(0, 1);                   // Anfangszustand 1 (Relais ausgeschaltet)
-  pinMode(0, OUTPUT);                   // GPIO0 als Ausgang konfigurieren
-  pinMode(2, INPUT_PULLUP);             // GPIO2 als Eingang mit Pullup konfigurieren
-  digitalWrite(0, 1);                   // Anfangszustand 1 (Relais ausgeschaltet)
- 
-  Serial.begin(115200);                 // Serielle schnittstelle initialisieren
-  Serial.println("");                   // Leere Zeile ausgeben
-  Serial.println("Starte WLAN-Hotspot \"astral\"");
-  WiFi.mode(WIFI_AP);                   // access point modus
-  WiFi.softAP("astral", "12345678");    // Name des Wi-Fi netzes
-  delay(500);                           //Abwarten 0,5s
-  Serial.print("IP Adresse ");          //Ausgabe aktueller IP des Servers
-  Serial.println(WiFi.softAPIP());
- 
-  //  Bechandlung der Ereignissen anschlissen
-  server.on("/", Ereignis_Index);
-  server.on("/1.html", Ereignis_SchalteON);
-  server.on("/0.html", Ereignis_SchalteOFF);
- 
-  server.begin();                       // Starte den Server
-  Serial.println("HTTP Server gestartet");
+    //digitalWrite(0, 1);                   // Anfangszustand 1 (Relais ausgeschaltet)
+    pinMode(0, OUTPUT);                   // GPIO0 configured as output
+    pinMode(2, INPUT_PULLUP);             // GPIO2 configured as input with Pullup
+    digitalWrite(0, 1);                   // initial condition 1 (Relay off)
+    
+    Serial.begin(115200);                 // init seriel inteface
+    Serial.println("");                   // print empty line
+    Serial.println("Starte WLAN-Hotspot \"astral\"");
+    WiFi.mode(WIFI_AP);                   // access point modus
+    WiFi.softAP("astral", "12345678");    // name of the Wifi net
+    delay(500);                           // wait 0,5s
+    Serial.print("IP Adresse ");          // print of the current IP of the server
+    Serial.println(WiFi.softAPIP());
+    
+    // treatment of the different events - before server.begin()!!!
+    server.on("/", Ereignis_Index);
+    server.on("/1.html", Ereignis_SchalteON);
+    server.on("/0.html", Ereignis_SchalteOFF);
+    
+    server.begin();                       // start the server
+    Serial.println("HTTP Server gestartet");
 }
  
 void loop()
 {
-  server.handleClient();
+    server.handleClient();
+    delay(500);
+  
 //  if (!digitalRead(2))          //Wenn Taster an GPIO2 betetigt wurde
 //  {
 //    val = !val;                 // Schaltzuschtand andern
