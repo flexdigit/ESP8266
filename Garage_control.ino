@@ -15,7 +15,7 @@
 #define SSID "astral"
 #define PW   "12345678"                 // set to "" for open access point w/o passwortd
 
-// Oder leiber so?
+// Oder lieber so?
 const char* password = "mypassphrase";
 
 // configure IO
