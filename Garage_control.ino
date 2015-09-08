@@ -14,22 +14,6 @@
 // configure Wifi
 #define SSID "astral"
 #define PW   "12345678"                 // set to "" for open access point w/o passwortd
-/*
- * from
- * http://esp8266-server.de/
- * 
- * Webserver as Accesspoint for ESP8266
- * 
- * Free for anyone!!! 
- * 
- */
- 
-#include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
-
-// configure Wifi
-const char* SSID = "EspGarContr";
-const char* PW   = "12345678";          // set to "" for open access point w/o passwortd
 
 // configure IO
 const int GPIO0 = 0;                    // GPIO0 used for the relay
@@ -38,13 +22,14 @@ const int GPIO2 = 2;                    // GPIO2 not used, just to configure as 
 int val = 0;                            // switched off on setup
 String Temp = "";
 
-String html1 = "<!DOCTYPE html>\r\n<html>\r\n\
-<head>\r\n<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"content-type\">\r\n\
-<title>Garage control</title>\r\n\
-<form action=\"";
+String html1 = "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<meta content=\"text/html;   \
+                charset=ISO-8859-1\" http-equiv=\"content-type\">\r\n<title>Garage  \
+                control</title>\r\n</head>\r\n<body>\r\nPush the button to toggle   \
+                the door opener!\r\n<br>\r\n<br>\r\n<form action=\"";
+
 String html2 = "\">\r\n<input value=\"Open/Close\" style=\"";
-String html3 = " width:14em;height:12em; font-size: 24px;\" type=\"submit\">\
-</form>\r\n</head>\r\n<body>\r\nPush the button to toggle the door opener!</body>\r\n</html>";
+String html3 = "width:14em;height:12em; font-size: 24px;\" type=\"                  \
+                submit\"></form>\r\n</body>\r\n</html>";
  
 
 ESP8266WebServer server(80);            // Setup server port
@@ -52,7 +37,7 @@ ESP8266WebServer server(80);            // Setup server port
 void Event_Index()                      // Executed if "http://<ip address>/" is called
 {
     Temp  = html1 + "/toggle.htm";
-    Temp += html2 + String((val) ? "BACKGROUND-COLOR: LightBlue ;" : "BACKGROUND-COLOR: LightCoral ;") + html3;
+    Temp += html2 + String((val) ? "BACKGROUND-COLOR: LightBlue;" : "BACKGROUND-COLOR: LightCoral;") + html3;
     server.send(200, "text/html", Temp);
 }
 
@@ -65,7 +50,7 @@ void Event_Toggle()                     // Executed if "http://<ip address>/" is
     Serial.println(val);
     
     Temp  = html1 + "/toggle.htm";
-    Temp += html2 + String((val) ? "BACKGROUND-COLOR: LightBlue ;" : "BACKGROUND-COLOR: LightCoral ;") + html3;
+    Temp += html2 + String((val) ? "BACKGROUND-COLOR: LightBlue;" : "BACKGROUND-COLOR: LightCoral;") + html3;
     
     //Serial.println(Temp);
     server.send(200, "text/html", Temp);
