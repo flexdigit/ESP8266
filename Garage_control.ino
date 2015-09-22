@@ -19,7 +19,8 @@
 const int GPIO0 = 0;                    // GPIO0 used for the relay
 const int GPIO2 = 2;                    // GPIO2 not used, just to configure as input with Pullup
 
-int val = 0;                            // switched off on setup
+int val = 0;                            // switched 'off' on setup
+int color = 0;                          // just to change the color of the action button
 String Temp = "";
 
 String html1 = "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<meta content=\"text/html;\
@@ -43,15 +44,22 @@ void Event_Index()                      // Executed if "http://<ip address>/" is
 
 void Event_Toggle()                     // Executed if "http://<ip address>/toggle.htm" is called
 {
-    val = !val;
-    digitalWrite(GPIO0, val);
+    //Serial.print("LED is: ");
+    //Serial.println(val);
     
-    Serial.print("LED is: ");
-    Serial.println(val);
-    
+    color =! color;
     Temp  = html1 + "/toggle.htm";
-    Temp += html2 + String((val) ? "BACKGROUND-COLOR: LightBlue ;" : "BACKGROUND-COLOR: LightCoral ;") + html3;
+    Temp += html2 + String((color) ? "BACKGROUND-COLOR: LightBlue;" : "BACKGROUND-COLOR: LightCoral;") + html3;
     server.send(200, "text/html", Temp);
+    
+    val =! val;
+    digitalWrite(GPIO0, val);
+    Serial.print("LED is: ");
+    Serial.print(val);
+    delay(500);
+    val =! val;
+    digitalWrite(GPIO0, val);
+    Serial.println(val);
     //Serial.println(Temp);               // for debugging purpose
 }
 
@@ -77,7 +85,7 @@ void setup()
     server.on("/toggle.htm", Event_Toggle);
     
     server.begin();                     // start the server
-    Serial.println("HTTP Server gestartet");
+    Serial.println("HTTP Server gestartet..");
 }
  
 void loop()
