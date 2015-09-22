@@ -12,10 +12,6 @@
 #include <ESP8266WebServer.h>
 
 // configure Wifi
-#define SSID "astral"
-#define PW   "12345678"                 // set to "" for open access point w/o passwortd
-
-// configure IO
 const int GPIO0 = 0;                    // GPIO0 used for the relay
 const int GPIO2 = 2;                    // GPIO2 not used, just to configure as input with Pullup
 
@@ -44,23 +40,21 @@ void Event_Index()                      // Executed if "http://<ip address>/" is
 
 void Event_Toggle()                     // Executed if "http://<ip address>/toggle.htm" is called
 {
-    //Serial.print("LED is: ");
-    //Serial.println(val);
-    
+    // generate the html page and dispatch it to the client
     color =! color;
     Temp  = html1 + "/toggle.htm";
     Temp += html2 + String((color) ? "BACKGROUND-COLOR: LightBlue;" : "BACKGROUND-COLOR: LightCoral;") + html3;
     server.send(200, "text/html", Temp);
     
+    // handle the LED/relay and do some serial print lines...
     val =! val;
     digitalWrite(GPIO0, val);
     Serial.print("LED is: ");
     Serial.print(val);
-    delay(500);
+    delay(500);                         // wait for 1/2 a secound to give the door control a chance
     val =! val;
     digitalWrite(GPIO0, val);
     Serial.println(val);
-    //Serial.println(Temp);               // for debugging purpose
 }
 
 void setup()
