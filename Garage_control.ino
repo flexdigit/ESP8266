@@ -12,10 +12,14 @@
 #include <ESP8266WebServer.h>
 
 // configure Wifi
+const char* SSID = "Garage";
+const char* PW   = "12345678";          // set to "" for open access point w/o passwortd
+
+// configure IO
 const int GPIO0 = 0;                    // GPIO0 used for the relay
 const int GPIO2 = 2;                    // GPIO2 not used, just to configure as input with Pullup
 
-int val = 0;                            // switched 'off' on setup
+int val = LOW;                          // "LOW/1" means switched 'off' on setup
 int color = 0;                          // just to change the color of the action button
 String Temp = "";
 
@@ -47,12 +51,12 @@ void Event_Toggle()                     // Executed if "http://<ip address>/togg
     server.send(200, "text/html", Temp);
     
     // handle the LED/relay and do some serial print lines...
-    val =! val;
+    val =! val;                         // toggle on
     digitalWrite(GPIO0, val);
     Serial.print("LED is: ");
     Serial.print(val);
-    delay(500);                         // wait for 1/2 a secound to give the door control a chance
-    val =! val;
+    delay(500);                         // wait for 1/2 a secound to give the door control a chance to react
+    val =! val;                         // toggle off
     digitalWrite(GPIO0, val);
     Serial.println(val);
 }
