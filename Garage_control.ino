@@ -25,7 +25,7 @@ String Temp = "";
 
 String html1 = "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<meta content=\"text/html;\
 charset=ISO-8859-1\" http-equiv=\"content-type\">\r\n<title>Garage\
-control</title>\r\n</head>\r\n<body>\r\nPush the button to toggle\
+control</title>\r\n</head>\r\n<body>\r\nPush the button to toggle \
 the door opener!\r\n<br>\r\n<br>\r\n<form action=\"";
 
 String html2 = "\">\r\n<input value=\"Open/Close\" style=\"";
