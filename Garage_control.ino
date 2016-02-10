@@ -12,15 +12,13 @@
 #include <ESP8266WebServer.h>
 
 // configure Wifi
-const char* SSID = "*********";
-const char* PW   = "********";          // set to "" for open access point w/o passwortd
+const char* SSID = "**************";
+const char* PW   = "**************";    // set to "" for open access point w/o passwortd
 
 // configure IO
-const int GPIO0 = 0;                    // GPIO0 used for the relay
-const int GPIO2 = 2;                    // GPIO2 not used, just to configure as input with Pullup in the setup routine
-//const int GPIO12 = 12;                  // For ESP8266-12E usage
+const int GPIO4 = 4;                    // For ESP8266-12E usage
 
-int val = HIGH;                         // "HIGH/1" means switched 'off' on setup
+int val = LOW;                          // "LOW/0" means switched 'off' on setup
 int color = 0;                          // just to change the color of the action button
 String Temp = "";
 
@@ -51,23 +49,21 @@ void Event_Toggle()                     // Executed if "http://<ip address>/togg
     server.send(200, "text/html", Temp);
     
     // handle the LED/relay and do some serial print lines...
-    //digitalWrite(GPIO0, val);
+    val =! val;                         // toggle on
     Serial.print(F("LED is: "));
     Serial.print(val);
-    val =! val;                         // toggle on
-    digitalWrite(GPIO0, val);
+    digitalWrite(GPIO4, val);
     delay(500);                         // wait for 1/2 a secound to give the door control a chance to react
-    Serial.println(val);
     val =! val;                         // toggle off
-    digitalWrite(GPIO0, val);    
+    Serial.println(val);
+    digitalWrite(GPIO4, val);    
 }
 
 void setup()
 {
-    pinMode(GPIO0, OUTPUT);             // GPIO0 configured as output
-    pinMode(GPIO2, INPUT_PULLUP);       // GPIO2 configured as input with Pullup
-    digitalWrite(GPIO0, val);           // initial condition 1 (Relay off)
-    
+    pinMode(GPIO4, OUTPUT);             // GPIO2 configured as output
+    digitalWrite(GPIO4, val);           // initial condition 1 (Relay off)
+
     Serial.begin(115200);               // init serial inteface
 
     Serial.println(F(""));              // You can pass flash-memory based strings to
