@@ -12,10 +12,12 @@
 #include <ESP8266WebServer.h>
 
 // configure Wifi
-const char* SSID = "**************";
-const char* PW   = "**************";    // set to "" for open access point w/o passwortd
+const char* SSID = "****************";
+const char* PW   = "****************";  // set to "" for open access point w/o passwortd
 
 // configure IO
+const int GPIO0 = 0;
+const int GPIO2 = 2;
 const int GPIO4 = 4;                    // For ESP8266-12E usage
 
 int val = LOW;                          // "LOW/0" means switched 'off' on setup
@@ -61,7 +63,9 @@ void Event_Toggle()                     // Executed if "http://<ip address>/togg
 
 void setup()
 {
-    pinMode(GPIO4, OUTPUT);             // GPIO2 configured as output
+    pinMode(GPIO0, INPUT_PULLUP);       // GPIO0 configured as input with Pullup
+    pinMode(GPIO2, INPUT_PULLUP);       // GPIO2 configured as input with Pullup
+    pinMode(GPIO4, OUTPUT);             // GPIO4 configured as output
     digitalWrite(GPIO4, val);           // initial condition 1 (Relay off)
 
     Serial.begin(115200);               // init serial inteface
