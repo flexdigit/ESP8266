@@ -11,6 +11,6 @@ https://www.mikrocontroller.net/topic/389243#4464206<br>
 BlackBoard - Lochraster:<br>
 [ESP-12E-Lochraster.bb.txt](https://github.com/flexdigit/ESP8266/files/127693/ESP-12E-Lochraster.bb.txt)
 <br>
-[Next version](https://github.com/flexdigit/ESP8266/issues/4)
+[ESP-12E-Lochraster.bb.txt](https://github.com/flexdigit/ESP8266/files/131270/ESP-12E-Lochraster.bb.txt)
 
 
