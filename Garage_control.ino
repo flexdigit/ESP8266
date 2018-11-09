@@ -117,8 +117,8 @@ void loop()
     delay(1);
 }
 
-void WiFiconnect() {
-
+void WiFiconnect()
+{
     Serial.print(F("Start WLAN-Hotspot: "));
     Serial.println(SSID);
     
