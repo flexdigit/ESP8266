@@ -13,7 +13,7 @@
 
 // configure Wifi
 const char* SSID = "*************";
-const char* PW   = "*************";          // set to "" for open access point w/o passwortd
+const char* PW   = "*************";          // set to "" for open access point w/o password
 
 IPAddress ip(192,168,178,38);
 IPAddress gateway(192,168,178,1);
